@@ -1,0 +1,22 @@
+{
+  "name": "api-rest1",
+  "version": "1.0.0",
+  "description": "Primera api rest con express",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "api",
+    "rest",
+    "express",
+    "node"
+  ],
+  "author": "Claus Chocho",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
