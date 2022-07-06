@@ -3,6 +3,8 @@
 const cors = require("cors");
 //importamos el modulo express
 const express = require("express");
+//importo y configuro las variable de entorno
+require("dotenv").config();
 const {
   buscarNotaPorId,
   insertarNota,
@@ -17,7 +19,6 @@ server.use(express.json());
 //utilizamos middleware para cors
 server.use(cors());
 //puerto para el servidor
-const PORT = 3000;
 
 //rutas del API REST
 //http:localhost:3000/ => ENDPOINT PRINCIPAL API REST
@@ -29,6 +30,7 @@ server.use("/api/v1/notas", require("./routes/notas"));
 server.use("/api/v1/usuarios", require("./routes/usuarios"));
 
 //escuchar el servidor en el puerto PORT
-server.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+
+server.listen(process.env.PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${process.env.PORT}`);
 });

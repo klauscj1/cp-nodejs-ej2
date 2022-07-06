@@ -1,10 +1,19 @@
+const pool = require("../database/database");
+
 let notas = [
   { id: 1, title: "Note 1", description: "Description note 1" },
   { id: 2, title: "Note 2", description: "Description note 2" },
 ];
 
-const buscarNotas = () => {
-  return notas;
+const buscarNotas = async () => {
+  try {
+    const notasQuery = await pool.query("select * from nota", []);
+    const { rows: notas } = notasQuery;
+    return notas;
+  } catch (error) {
+    console.log("error en buscarNotas", error);
+    return null;
+  }
 };
 
 const buscarNotaPorId = (noteId) => {
