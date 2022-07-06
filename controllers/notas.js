@@ -40,16 +40,16 @@ const postNota = (req, res = response) => {
   const noteToSave = req.body;
   const noteCompleteToSave = {
     ...noteToSave,
-    id: notas.length + 1,
+    id: new Date().getTime(),
   };
   const noteSaved = insertarNota(noteCompleteToSave);
   res.status(201).send(noteSaved);
 };
 
 const putNota = (req, res = response) => {
-  const { id } = req.params;
+  const { idNota } = req.params;
   const noteToUpdate = req.body;
-  const noteUpdated = actualizarNota(id, noteToUpdate);
+  const noteUpdated = actualizarNota(idNota, noteToUpdate);
   if (!noteUpdated) {
     return res.status(404).send({
       error: "No existe una nota con este id",

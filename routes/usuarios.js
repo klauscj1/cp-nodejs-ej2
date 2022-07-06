@@ -1,5 +1,6 @@
 //importacion del objeto Router
 const { Router } = require("express");
+const { check } = require("express-validator");
 
 //importaciones de funciones del controlador de usuarios
 const {
@@ -9,6 +10,7 @@ const {
   putUsuario,
   deleteUsuario,
 } = require("../controllers/usuarios");
+const { validarCampos } = require("../middlewares/validar-campos");
 
 //creacion del router de usuarios
 const router = Router();
@@ -25,11 +27,28 @@ router.get("/:id", getUsuarioPorId);
 
 //agregar endpoint POST con id => http:localhost:3000/usuarios
 //crear una nueva usuario
-router.post("/", postUsuario);
+router.post(
+  "/",
+  [
+    check("nombre", "El campo nombre es obligatorio").notEmpty(),
+    check("apellido", "El campo apellido es obligatorio").notEmpty(),
+    validarCampos,
+  ],
+  postUsuario
+);
 
 //agregar endpoint PUT con id => http:localhost:3000/usuarios
 //ACTUALIZAR UNA usuario
-router.put("/:id", putUsuario);
+router.put(
+  "/:usuId",
+  [
+    check("nombre", "El campo nombre es obligatorio").notEmpty(),
+    check("apellido", "El campo apellido es obligatorio").notEmpty(),
+    check("id", "El campo apellido es obligatorio").notEmpty(),
+    validarCampos,
+  ],
+  putUsuario
+);
 
 //agregar endpoint DELETE con id => http:localhost:3000/usuarios
 //ELIMINAR UNA usuario

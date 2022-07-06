@@ -40,22 +40,22 @@ const postUsuario = (req, res = response) => {
   const userToSave = req.body;
   const userCompleteToSave = {
     ...userToSave,
-    id: usuarios.length + 1,
+    id: new Date().getTime(),
   };
   const userSaved = insertarUsuario(userCompleteToSave);
   res.status(201).send(userSaved);
 };
 
 const putUsuario = (req, res = response) => {
-  const { id } = req.params;
+  const { usuId } = req.params;
   const userToUpdate = req.body;
-  const userUpdated = actualizarUsuario(id, userToUpdate);
+  const userUpdated = actualizarUsuario(usuId, userToUpdate);
   if (!userUpdated) {
     return res.status(404).send({
       error: "No existe un usuario con este id",
     });
   }
-  res.status(200).send(noteUpdated);
+  res.status(200).send(userUpdated);
 };
 
 const deleteUsuario = (req, res = response) => {

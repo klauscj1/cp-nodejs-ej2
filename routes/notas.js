@@ -1,6 +1,7 @@
 //importacion del objeto Router
 const { Router } = require("express");
-
+//importamos el objeto check para las validaciones
+const { check } = require("express-validator");
 //importaciones de funciones del controlador de notas
 const {
   getAllNotas,
@@ -9,6 +10,7 @@ const {
   putNota,
   deleteNota,
 } = require("../controllers/notas");
+const { validarCampos } = require("../middlewares/validar-campos");
 
 //creacion del router de notas
 const router = Router();
@@ -25,11 +27,28 @@ router.get("/:id", getNotaPorId);
 
 //agregar endpoint POST con id => http:localhost:3000/notas
 //crear una nueva nota
-router.post("/", postNota);
+router.post(
+  "/",
+  [
+    check("title", "El campo  title es obligatorio").not().isEmpty(),
+    check("description", "El campo description es obligatorio").not().isEmpty(),
+    validarCampos,
+  ],
+  postNota
+);
 
 //agregar endpoint PUT con id => http:localhost:3000/notas
 //ACTUALIZAR UNA NOTA
-router.put("/:id", putNota);
+router.put(
+  "/:idNota",
+  [
+    check("title", "El campo  title es obligatorio").not().isEmpty(),
+    check("description", "El campo description es obligatorio").not().isEmpty(),
+    check("id", "El campo id es necesario").not().isEmpty(),
+    validarCampos,
+  ],
+  putNota
+);
 
 //agregar endpoint DELETE con id => http:localhost:3000/notas
 //ELIMINAR UNA NOTA

@@ -20,7 +20,7 @@ const insertarUsuario = (userToSave) => {
 };
 
 const actualizarUsuario = (id, userUpdate) => {
-  let userFind = notas.find((user) => user.id === parseInt(id));
+  let userFind = usuarios.find((user) => user.id === parseInt(id));
   if (userFind) {
     userFind.nombre = userUpdate.nombre;
     userFind.apellido = userUpdate.apellido;
