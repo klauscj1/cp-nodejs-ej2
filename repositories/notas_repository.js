@@ -1,10 +1,5 @@
 const pool = require("../database/database");
 
-let notas = [
-  { id: 1, title: "Note 1", description: "Description note 1" },
-  { id: 2, title: "Note 2", description: "Description note 2" },
-];
-
 const buscarNotas = async () => {
   try {
     const notasQuery = await pool.query("select * from nota", []);
@@ -16,37 +11,54 @@ const buscarNotas = async () => {
   }
 };
 
-const buscarNotaPorId = (noteId) => {
-  const note = notas.find((note) => note.id === noteId);
-  return note;
-};
-
-const insertarNota = (noteToSave) => {
-  notas.push(noteToSave);
-  return noteToSave;
-};
-
-const actualizarNota = (id, noteUpdate) => {
-  let noteFind = notas.find((note) => note.id === parseInt(id));
-  if (noteFind) {
-    noteFind.title = noteUpdate.title;
-    noteFind.description = noteUpdate.description;
-    notas.map((note) => {
-      if (note.id === noteFind.id) {
-        return noteFind;
-      }
-      return note;
-    });
-    return noteFind;
-  } else {
+const buscarNotaPorId = async (noteId) => {
+  try {
+    const notaQuery = await pool.query("select * from nota where id=$1", [
+      noteId,
+    ]);
+    const { rows: notas } = notaQuery;
+    return notas[0];
+  } catch (error) {
+    console.log("error en buscarNotaPorId", error);
     return null;
   }
 };
 
-const eliminarNota = (id) => {
-  const noteId = parseInt(id);
-  const newNotes = notas.filter((note) => note.id !== noteId);
-  notas = newNotes;
+const insertarNota = async (noteToSave) => {
+  try {
+    const newNotaQuery = await pool.query(
+      "INSERT INTO nota(title, description) VALUES ($1,$2) returning id",
+      [noteToSave.title, noteToSave.description]
+    );
+    const { rows: notasInsertadas } = newNotaQuery;
+    return notasInsertadas[0].id;
+  } catch (error) {
+    console.log("error en insertarNota", error);
+    return null;
+  }
+};
+
+const actualizarNota = async (id, noteUpdate) => {
+  try {
+    const updateNotaQuery = await pool.query(
+      "UPDATE nota SET title=$1, description=$2 where id=$3",
+      [noteUpdate.title, noteUpdate.description, id]
+    );
+    return updateNotaQuery.rowCount;
+  } catch (error) {
+    console.log("error en actualizarNota", error);
+    return null;
+  }
+};
+
+const eliminarNota = async (id) => {
+  try {
+    const deleteQuery = await pool.query("DELETE FROM nota where id=$1", [id]);
+    return deleteQuery.rowCount;
+  } catch (error) {
+    console.log("error en eliminarNota", error);
+    return null;
+  }
 };
 
 module.exports = {

@@ -22,11 +22,11 @@ const getAllNotas = async (req, res = response) => {
   res.status(200).send(notas);
 };
 
-const getNotaPorId = (req, res = response) => {
+const getNotaPorId = async (req, res = response) => {
   const { id } = req.params;
   try {
     const noteId = parseInt(id);
-    const note = buscarNotaPorId(noteId);
+    const note = await buscarNotaPorId(noteId);
     if (note) {
       return res.status(200).send(note);
     } else {
@@ -41,32 +41,74 @@ const getNotaPorId = (req, res = response) => {
   }
 };
 
-const postNota = (req, res = response) => {
-  const noteToSave = req.body;
-  const noteCompleteToSave = {
-    ...noteToSave,
-    id: new Date().getTime(),
-  };
-  const noteSaved = insertarNota(noteCompleteToSave);
-  res.status(201).send(noteSaved);
-};
-
-const putNota = (req, res = response) => {
-  const { idNota } = req.params;
-  const noteToUpdate = req.body;
-  const noteUpdated = actualizarNota(idNota, noteToUpdate);
-  if (!noteUpdated) {
-    return res.status(404).send({
-      error: "No existe una nota con este id",
+const postNota = async (req, res = response) => {
+  try {
+    const noteToSave = req.body;
+    const noteSavedId = await insertarNota(noteToSave);
+    if (!noteSavedId) {
+      return res.status(500).send({
+        error: "PROBLEMAS EN EL SERVIDOR",
+      });
+    }
+    const notaInsertada = await buscarNotaPorId(noteSavedId);
+    res.status(201).send(notaInsertada);
+  } catch (error) {
+    console.log("error en postNota", error);
+    return res.status(500).send({
+      error: "PROBLEMAS EN EL SERVIDOR",
     });
   }
-  res.status(200).send(noteUpdated);
 };
 
-const deleteNota = (req, res = response) => {
-  const { id } = req.params;
-  eliminarNota(id);
-  res.status(200).send();
+const putNota = async (req, res = response) => {
+  try {
+    const { idNota } = req.params;
+    const noteToUpdate = req.body;
+    let noteFind = await buscarNotaPorId(idNota);
+    if (!noteFind) {
+      return res.status(404).send({
+        error: "No se encontro una nota con el id " + idNota,
+      });
+    }
+    noteFind.title = noteToUpdate.title;
+    noteFind.description = noteToUpdate.description;
+    const noteUpdated = await actualizarNota(idNota, noteFind);
+    if (!noteUpdated) {
+      return res.status(500).send({
+        error: "PROBLEMAS EN EL SERVIDOR",
+      });
+    }
+    res.status(200).send(noteFind);
+  } catch (error) {
+    console.log("error en putNota", error);
+    return res.status(500).send({
+      error: "PROBLEMAS EN EL SERVIDOR",
+    });
+  }
+};
+
+const deleteNota = async (req, res = response) => {
+  try {
+    const { id } = req.params;
+    const noteToDelete = await buscarNotaPorId(id);
+    if (!noteToDelete) {
+      return res.status(404).send({
+        error: "No se encontro una nota con el id " + idNota,
+      });
+    }
+    const respDeleteNote = await eliminarNota(noteToDelete.id);
+    if (!respDeleteNote) {
+      return res.status(500).send({
+        error: "PROBLEMAS EN EL SERVIDOR",
+      });
+    }
+    res.status(200).send();
+  } catch (error) {
+    console.log("error en deleteNota", error);
+    return res.status(500).send({
+      error: "PROBLEMAS EN EL SERVIDOR",
+    });
+  }
 };
 
 module.exports = {
