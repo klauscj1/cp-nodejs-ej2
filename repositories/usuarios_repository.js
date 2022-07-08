@@ -1,45 +1,69 @@
-let usuarios = [
-  { id: 1, nombre: "Claus", apellido: "Chocho" },
-  { id: 2, nombre: "Cris", apellido: "Cabrera" },
-  { id: 3, nombre: "Gabo", apellido: "Cuenca" },
-];
+const pool = require("../database/database");
 
-const buscarUsuarios = () => {
-  return usuarios;
-};
-
-const buscarUsuarioPorId = (usuId) => {
-  const usuario = usuarios.find((usuario) => usuario.id === usuId);
-  console.log("usuario ", usuario);
-  return usuario;
-};
-
-const insertarUsuario = (userToSave) => {
-  usuarios.push(userToSave);
-  return userToSave;
-};
-
-const actualizarUsuario = (id, userUpdate) => {
-  let userFind = usuarios.find((user) => user.id === parseInt(id));
-  if (userFind) {
-    userFind.nombre = userUpdate.nombre;
-    userFind.apellido = userUpdate.apellido;
-    usuarios.map((user) => {
-      if (user.id === userFind.id) {
-        return userFind;
-      }
-      return user;
-    });
-    return userFind;
-  } else {
+const buscarUsuarios = async () => {
+  try {
+    const usuariosQuery = await pool.query("select * from usuario", []);
+    const { rows: usuarios } = usuariosQuery;
+    return usuarios;
+  } catch (error) {
+    console.log("error en buscarUsuarios", error);
     return null;
   }
 };
 
-const eliminarUsuario = (id) => {
-  const userId = parseInt(id);
-  const newUsers = usuarios.filter((user) => user.id !== userId);
-  usuarios = newUsers;
+const buscarUsuarioPorId = async (usuId) => {
+  try {
+    const usuarioQuery = await pool.query("select * from usuario where id=$1", [
+      usuId,
+    ]);
+    const { rows: usuarios } = usuarioQuery;
+    return usuarios[0];
+  } catch (error) {
+    console.log("error en buscarUsuarioPorId", error);
+    return null;
+  }
+};
+
+const insertarUsuario = async (userToSave) => {
+  try {
+    const insertarUsuarioQuery = await pool.query(
+      "INSERT INTO usuario(nombre, apellido) VALUES ($1, $2) returning id",
+      [userToSave.nombre, userToSave.apellido]
+    );
+    const { rows } = insertarUsuarioQuery;
+    return rows[0].id;
+  } catch (error) {
+    console.log("error en insertarUsuario", error);
+    return null;
+  }
+};
+
+const actualizarUsuario = async (id, userUpdate) => {
+  try {
+    const actualizarUsuarioQuery = await pool.query(
+      "UPDATE usuario SET nombre=$1, apellido=$2 WHERE id=$3",
+      [userUpdate.nombre, userUpdate.apellido, id]
+    );
+    const { rowCount } = actualizarUsuarioQuery;
+    return rowCount;
+  } catch (error) {
+    console.log("error en actualizarUsuario", error);
+    return null;
+  }
+};
+
+const eliminarUsuario = async (id) => {
+  try {
+    const eliminarUsuarioQuery = await pool.query(
+      "DELETE FROM usuario WHERE id=$1",
+      [id]
+    );
+    const { rowCount } = eliminarUsuarioQuery;
+    return rowCount;
+  } catch (error) {
+    console.log("error en eliminarUsuario", error);
+    return null;
+  }
 };
 
 module.exports = {

@@ -13,13 +13,19 @@ const {
 //metodos para el control de las req y res de notas
 
 const getAllNotas = async (req, res = response) => {
-  const notas = await buscarNotas();
-  if (!notas) {
+  try {
+    const notas = await buscarNotas();
+    if (!notas) {
+      return res.status(500).send({
+        message: "PROBLEMAS EN EL SERVIDOR",
+      });
+    }
+    res.status(200).send(notas);
+  } catch (error) {
     return res.status(500).send({
-      message: "PROBLEMAS EN EL SERVIDOR",
+      error: "PROBLEMAS EN EL SERVIDOR",
     });
   }
-  res.status(200).send(notas);
 };
 
 const getNotaPorId = async (req, res = response) => {
