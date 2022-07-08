@@ -32,6 +32,8 @@ router.post(
   [
     check("nombre", "El campo nombre es obligatorio").notEmpty(),
     check("apellido", "El campo apellido es obligatorio").notEmpty(),
+    check("password", "El campo password es obligatorio").notEmpty(),
+    check("email", "El campo email es obligatorio").isEmail(),
     validarCampos,
   ],
   postUsuario

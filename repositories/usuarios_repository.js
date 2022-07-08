@@ -24,11 +24,30 @@ const buscarUsuarioPorId = async (usuId) => {
   }
 };
 
+const buscarUsuarioPorEmail = async (email) => {
+  try {
+    const usuarioQuery = await pool.query(
+      "select * from usuario where email=$1",
+      [email]
+    );
+    const { rows: usuarios } = usuarioQuery;
+    return usuarios[0];
+  } catch (error) {
+    console.log("error en buscarUsuarioPorEmail", error);
+    return null;
+  }
+};
+
 const insertarUsuario = async (userToSave) => {
   try {
     const insertarUsuarioQuery = await pool.query(
-      "INSERT INTO usuario(nombre, apellido) VALUES ($1, $2) returning id",
-      [userToSave.nombre, userToSave.apellido]
+      "INSERT INTO usuario(nombre, apellido,password,email) VALUES ($1, $2,$3,$4) returning id",
+      [
+        userToSave.nombre,
+        userToSave.apellido,
+        userToSave.password,
+        userToSave.email,
+      ]
     );
     const { rows } = insertarUsuarioQuery;
     return rows[0].id;
@@ -72,4 +91,5 @@ module.exports = {
   actualizarUsuario,
   eliminarUsuario,
   buscarUsuarios,
+  buscarUsuarioPorEmail,
 };

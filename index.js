@@ -28,6 +28,7 @@ server.get("/", (req, res) => {
 
 server.use("/api/v1/notas", require("./routes/notas"));
 server.use("/api/v1/usuarios", require("./routes/usuarios"));
+server.use("/api/v1/auth", require("./routes/auth"));
 
 //escuchar el servidor en el puerto PORT
 
