@@ -11,6 +11,7 @@ const {
   deleteUsuario,
 } = require("../controllers/usuarios");
 const { validarCampos } = require("../middlewares/validar-campos");
+const { validarToken } = require("../middlewares/validar-jwt");
 
 //creacion del router de usuarios
 const router = Router();
@@ -19,17 +20,18 @@ const router = Router();
 
 // agregar endpoint GET principal=> http:localhost:3000/usuarios/
 //recuperar todas las usuarios existentes
-router.get("/", getAllUsuarios);
+router.get("/", validarToken, getAllUsuarios);
 
 //agregar endpoint GET con id => http:localhost:3000/usuarios/:id
 //recuperar el detalle de una sola usuario mediante el id
-router.get("/:id", getUsuarioPorId);
+router.get("/:id", validarToken, getUsuarioPorId);
 
 //agregar endpoint POST con id => http:localhost:3000/usuarios
 //crear una nueva usuario
 router.post(
   "/",
   [
+    validarToken,
     check("nombre", "El campo nombre es obligatorio").notEmpty(),
     check("apellido", "El campo apellido es obligatorio").notEmpty(),
     check("password", "El campo password es obligatorio").notEmpty(),
@@ -44,6 +46,7 @@ router.post(
 router.put(
   "/:usuId",
   [
+    validarToken,
     check("nombre", "El campo nombre es obligatorio").notEmpty(),
     check("apellido", "El campo apellido es obligatorio").notEmpty(),
     check("id", "El campo apellido es obligatorio").notEmpty(),
@@ -54,7 +57,7 @@ router.put(
 
 //agregar endpoint DELETE con id => http:localhost:3000/usuarios
 //ELIMINAR UNA usuario
-router.delete("/:id", deleteUsuario);
+router.delete("/:id", validarToken, deleteUsuario);
 
 //exportamos el objeto router
 module.exports = router;

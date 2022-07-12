@@ -60,8 +60,8 @@ const insertarUsuario = async (userToSave) => {
 const actualizarUsuario = async (id, userUpdate) => {
   try {
     const actualizarUsuarioQuery = await pool.query(
-      "UPDATE usuario SET nombre=$1, apellido=$2 WHERE id=$3",
-      [userUpdate.nombre, userUpdate.apellido, id]
+      "UPDATE usuario SET nombre=$1, apellido=$2, password=$4 WHERE id=$3",
+      [userUpdate.nombre, userUpdate.apellido, id, userUpdate.password]
     );
     const { rowCount } = actualizarUsuarioQuery;
     return rowCount;

@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const generarToken = (usuario) => {
   return new Promise((resolve, reject) => {
+    delete usuario.password;
     const payload = { ...usuario };
     jwt.sign(
       payload,

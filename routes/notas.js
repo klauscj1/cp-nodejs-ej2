@@ -11,6 +11,7 @@ const {
   deleteNota,
 } = require("../controllers/notas");
 const { validarCampos } = require("../middlewares/validar-campos");
+const { validarToken } = require("../middlewares/validar-jwt");
 
 //creacion del router de notas
 const router = Router();
@@ -19,17 +20,18 @@ const router = Router();
 
 // agregar endpoint GET principal=> http:localhost:3000/notas/
 //recuperar todas las notas existentes
-router.get("/", getAllNotas);
+router.get("/", validarToken, getAllNotas);
 
 //agregar endpoint GET con id => http:localhost:3000/notas/:id
 //recuperar el detalle de una sola nota mediante el id
-router.get("/:id", getNotaPorId);
+router.get("/:id", validarToken, getNotaPorId);
 
 //agregar endpoint POST con id => http:localhost:3000/notas
 //crear una nueva nota
 router.post(
   "/",
   [
+    validarToken,
     check("title", "El campo  title es obligatorio").not().isEmpty(),
     check("description", "El campo description es obligatorio").not().isEmpty(),
     validarCampos,
@@ -42,6 +44,7 @@ router.post(
 router.put(
   "/:idNota",
   [
+    validarToken,
     check("title", "El campo  title es obligatorio").not().isEmpty(),
     check("description", "El campo description es obligatorio").not().isEmpty(),
     check("id", "El campo id es necesario").not().isEmpty(),
@@ -52,7 +55,7 @@ router.put(
 
 //agregar endpoint DELETE con id => http:localhost:3000/notas
 //ELIMINAR UNA NOTA
-router.delete("/:id", deleteNota);
+router.delete("/:id", validarToken, deleteNota);
 
 //exportamos el objeto router
 module.exports = router;

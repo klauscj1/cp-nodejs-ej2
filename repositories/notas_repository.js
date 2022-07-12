@@ -11,6 +11,20 @@ const buscarNotas = async () => {
   }
 };
 
+const buscarNotasByUserId = async (usuarioId) => {
+  try {
+    const notasQuery = await pool.query(
+      "select * from nota where usuario_id=$1",
+      [usuarioId]
+    );
+    const { rows: notas } = notasQuery;
+    return notas;
+  } catch (error) {
+    console.log("error en buscarNotasByUserId", error);
+    return null;
+  }
+};
+
 const buscarNotaPorId = async (noteId) => {
   try {
     const notaQuery = await pool.query("select * from nota where id=$1", [
@@ -27,8 +41,8 @@ const buscarNotaPorId = async (noteId) => {
 const insertarNota = async (noteToSave) => {
   try {
     const newNotaQuery = await pool.query(
-      "INSERT INTO nota(title, description) VALUES ($1,$2) returning id",
-      [noteToSave.title, noteToSave.description]
+      "INSERT INTO nota(title, description,usuario_id) VALUES ($1,$2,$3) returning id",
+      [noteToSave.title, noteToSave.description, noteToSave.usuarioId]
     );
     const { rows: notasInsertadas } = newNotaQuery;
     return notasInsertadas[0].id;
@@ -67,4 +81,5 @@ module.exports = {
   actualizarNota,
   eliminarNota,
   buscarNotas,
+  buscarNotasByUserId,
 };

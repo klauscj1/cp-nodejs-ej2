@@ -3,18 +3,19 @@ const { response } = require("express");
 
 //importacion de metodos del repositorio de notas
 const {
-  buscarNotas,
   buscarNotaPorId,
   insertarNota,
   actualizarNota,
   eliminarNota,
+  buscarNotasByUserId,
 } = require("../repositories/notas_repository");
+const { buscarUsuarioPorId } = require("../repositories/usuarios_repository");
 
 //metodos para el control de las req y res de notas
 
 const getAllNotas = async (req, res = response) => {
   try {
-    const notas = await buscarNotas();
+    const notas = await buscarNotasByUserId(req.id);
     if (!notas) {
       return res.status(500).send({
         message: "PROBLEMAS EN EL SERVIDOR",
@@ -50,7 +51,11 @@ const getNotaPorId = async (req, res = response) => {
 const postNota = async (req, res = response) => {
   try {
     const noteToSave = req.body;
-    const noteSavedId = await insertarNota(noteToSave);
+    const noteToSaveComplete = {
+      ...noteToSave,
+      usuarioId: req.id,
+    };
+    const noteSavedId = await insertarNota(noteToSaveComplete);
     if (!noteSavedId) {
       return res.status(500).send({
         error: "PROBLEMAS EN EL SERVIDOR",
@@ -99,7 +104,7 @@ const deleteNota = async (req, res = response) => {
     const noteToDelete = await buscarNotaPorId(id);
     if (!noteToDelete) {
       return res.status(404).send({
-        error: "No se encontro una nota con el id " + idNota,
+        error: "No se encontro una nota con el id " + id,
       });
     }
     const respDeleteNote = await eliminarNota(noteToDelete.id);

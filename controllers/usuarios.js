@@ -80,6 +80,7 @@ const putUsuario = async (req, res = response) => {
     }
     userFind.nombre = userToUpdate.nombre;
     userFind.apellido = userToUpdate.apellido;
+    userFind.password = userToUpdate.password;
     const userUpdated = await actualizarUsuario(usuId, userFind);
     console.log("userUpdated", userUpdated);
     if (!userUpdated) {
