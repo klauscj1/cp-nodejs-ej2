@@ -5,15 +5,30 @@ const cors = require("cors");
 const express = require("express");
 //importo y configuro las variable de entorno
 require("dotenv").config();
-const {
-  buscarNotaPorId,
-  insertarNota,
-  actualizarNota,
-  eliminarNota,
-  buscarNotas,
-} = require("./repositories/notas_repository");
+//imortadmos la libreria para documentacion -> swagger
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
+
 //creamos un servidor
 const server = express();
+//creamos el objeto de configuracion de swagger
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "API REST CURSO NODEJS",
+      version: "1.0.0",
+    },
+    servers: [
+      {
+        url: "http://localhost:3000",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+
 //utilizamos middleware para json
 server.use(express.json());
 //utilizamos middleware para cors
@@ -25,6 +40,12 @@ server.use(cors());
 server.get("/", (req, res) => {
   res.send("<h1>API REST - CURSO NODEJS</h1>");
 });
+
+server.use(
+  "/api-doc",
+  swaggerUI.serve,
+  swaggerUI.setup(swaggerJsDoc(swaggerOptions))
+);
 
 server.use("/api/v1/notas", require("./routes/notas"));
 server.use("/api/v1/usuarios", require("./routes/usuarios"));

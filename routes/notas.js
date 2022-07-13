@@ -20,10 +20,46 @@ const router = Router();
 
 // agregar endpoint GET principal=> http:localhost:3000/notas/
 //recuperar todas las notas existentes
+
+/**
+ * @swagger
+ * /api/v1/notas/:
+ *    get:
+ *            description: Obtener todas las notas del usuario
+ *            responses:
+ *                '200':
+ *                    description: La respuesta fue buena
+ *                '401':
+ *                    description: Token invalido
+ *            parameters:
+ *                - in: header
+ *                  name: x-token
+ *                  description: token de authentication del usuario
+ */
 router.get("/", validarToken, getAllNotas);
 
 //agregar endpoint GET con id => http:localhost:3000/notas/:id
 //recuperar el detalle de una sola nota mediante el id
+/**
+ * @swagger
+ * /api/v1/notas/{id}:
+ *    get:
+ *            description: Obtener el detalle de la nota
+ *            responses:
+ *                '200':
+ *                    description: La respuesta fue buena
+ *                '401':
+ *                    description: Token invalido
+ *                '404':
+ *                    description: No existe una nota con ese id
+ *            parameters:
+ *                - in: path
+ *                  name: id
+ *                  description: Id de la nota que se requiere el detalle
+ *                - in: header
+ *                  name: x-token
+ *                  description: token de authentication del usuario
+ */
 router.get("/:id", validarToken, getNotaPorId);
 
 //agregar endpoint POST con id => http:localhost:3000/notas

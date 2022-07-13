@@ -13,7 +13,7 @@ const validarToken = (req, res, next) => {
   } catch (error) {
     console.log("error en validarToken", error);
     return res.status(401).json({
-      error: "Token invalido",
+      error: error.message,
     });
   }
 };
