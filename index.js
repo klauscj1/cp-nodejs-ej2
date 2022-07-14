@@ -52,7 +52,7 @@ server.use("/api/v1/usuarios", require("./routes/usuarios"));
 server.use("/api/v1/auth", require("./routes/auth"));
 
 //escuchar el servidor en el puerto PORT
-
-server.listen(process.env.PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${process.env.PORT}`);
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

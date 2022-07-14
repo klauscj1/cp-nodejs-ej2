@@ -15,20 +15,20 @@ const router = Router();
  *            responses:
  *                '200':
  *                    description: La respuesta fue buena
- *            parameters:
- *                - in: body
- *                  name: user
- *                  description: Credenciales del usuario
- *                  schema:
- *                    type: object
- *                    required:
- *                      - email
- *                      - password
- *                    properties:
- *                      email:
- *                        type: string
- *                      password:
- *                        type: string
+ *            requestBody:
+ *                  required: true
+ *                  content:
+ *                    application/json:
+ *                      schema:
+ *                        type: object
+ *                        required:
+ *                          - email
+ *                          - password
+ *                        properties:
+ *                          email:
+ *                            type: string
+ *                          password:
+ *                            type: string
  */
 router.post(
   "/",
